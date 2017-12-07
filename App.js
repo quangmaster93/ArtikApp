@@ -4,18 +4,22 @@ import {
   View,
   Linking,
   Alert,
-  Text
+  Text,
+  FlatList
 } from 'react-native';
 
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.state={devives:""}
+    this.state={devices:[]}
   }
-  _onPressButton () {
+  _onPressButton =(e)=> {
     let that=this;
-    var challenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
-    let url = `https://accounts.artik.cloud/authorize?prompt=login&client_id=0c2cefcfe2f245f58e053c31fa2241cb&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=cloud.artik.example.hellocloud://oauth2callback&state=abcdefgh`
+    let challenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+    let client_id="0c2cefcfe2f245f58e053c31fa2241cb";
+    let redirect_uri="cloud.artik.example.hellocloud://oauth2callback";
+    let state="abcdefgh";
+    let url = `https://accounts.artik.cloud/authorize?prompt=login&client_id=${client_id}&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${redirect_uri}&state=${state}`
     Linking.openURL(url)
     Linking.addEventListener('url', (event) => {
       var code = event.url.split("code=")[1].split('&')[0];
@@ -27,8 +31,7 @@ export default class App extends Component {
         code_verifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk",
         client_id: "0c2cefcfe2f245f58e053c31fa2241cb"
       };
-      console.log(code);
-      var urlGetToken = `https://accounts.artik.cloud/token?grant_type=${dkm.grant_type}&code=${dkm.code}&redirect_uri=${dkm.redirect_uri}&state=${dkm.state}&code_verifier=${dkm.code_verifier}&client_id=${dkm.client_id}`;
+      let urlGetToken = `https://accounts.artik.cloud/token?grant_type=${dkm.grant_type}&code=${dkm.code}&redirect_uri=${dkm.redirect_uri}&state=${dkm.state}&code_verifier=${dkm.code_verifier}&client_id=${dkm.client_id}`;
       fetch(urlGetToken, {
         method: "POST",
         headers: {
@@ -36,7 +39,8 @@ export default class App extends Component {
         }
       })
         .then(responseJson => {
-          that.getUserInfo(responseJson._bodyInit.access_token);
+          let access_token=JSON.parse(responseJson._bodyInit).access_token;
+          that.getUserInfo(access_token);
         })
         .catch(error => {
           console.error(error);
@@ -45,8 +49,8 @@ export default class App extends Component {
   }
   getUserInfo(token){
     let that=this;
-    let url=`api.artik.cloud/v1.1/users/self`
-    fetch(urlGetToken, {
+    let url=`https://api.artik.cloud/v1.1/users/self`
+    fetch(url, {
       method: "get",
       headers: {
         "Content-Type": "application/json",
@@ -54,24 +58,26 @@ export default class App extends Component {
       }
     })
       .then(responseJson => {
-        that.getDevices(responseJson.data.id,token)
+        let userId=JSON.parse(responseJson._bodyInit).data.id;
+        that.getDevices(userId,token)
       })
       .catch(error => {
         console.error(error);
       });
   }
-  getDevices(token,token){
+  getDevices(userId,token){
     let that=this;
     let url=`https://api.artik.cloud/v1.1/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`;
     fetch(url, {
-      method: "POST",
+      method: "get",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       }
     })
       .then(responseJson => {
-        that.setState({devives:responseJson})
+        let devices=JSON.parse(responseJson._bodyInit).data.devices;
+        that.setState({devices:devices});
       })
       .catch(error => {
         console.error(error);
@@ -86,7 +92,8 @@ export default class App extends Component {
           }
           title="Login"
         />
-        <Text>{this.state.devives}</Text>
+        <FlatList data={this.state.devices} renderItem={({item})=><Text>{item.id}</Text>}>
+       </FlatList>
       </View>
     );
   }
