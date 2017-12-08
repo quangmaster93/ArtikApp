@@ -5,20 +5,45 @@ import {
   Linking,
   Alert,
   Text,
-  FlatList
+  FlatList,
+  AsyncStorage
 } from 'react-native';
 
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.state={devices:[]}
+    this.state = {
+      devices: [],
+      isLogged: false
+    }
   }
-  _onPressButton =(e)=> {
-    let that=this;
+  componentDidMount(){
+    console.log("did mount");
+    this.getToken();
+  }
+  async saveToken(access_token){
+    try {
+      await AsyncStorage.setItem('token', access_token);
+    } catch (error) {
+      console.log("token is not saved!")
+    }
+  }
+  async getToken(){
+    try {      
+      let access_token = await AsyncStorage.getItem('token');
+      if (access_token !== null){
+        this.getUserInfo(access_token);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  _onPressButton = (e) => {
+    let that = this;
     let challenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
-    let client_id="0c2cefcfe2f245f58e053c31fa2241cb";
-    let redirect_uri="cloud.artik.example.hellocloud://oauth2callback";
-    let state="abcdefgh";
+    let client_id = "0c2cefcfe2f245f58e053c31fa2241cb";
+    let redirect_uri = "cloud.artik.example.hellocloud://oauth2callback";
+    let state = "abcdefgh";
     let url = `https://accounts.artik.cloud/authorize?prompt=login&client_id=${client_id}&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${redirect_uri}&state=${state}`
     Linking.openURL(url)
     Linking.addEventListener('url', (event) => {
@@ -39,7 +64,9 @@ export default class App extends Component {
         }
       })
         .then(responseJson => {
-          let access_token=JSON.parse(responseJson._bodyInit).access_token;
+          let access_token = JSON.parse(responseJson._bodyInit).access_token;
+          // save token
+          that.saveToken(access_token);
           that.getUserInfo(access_token);
         })
         .catch(error => {
@@ -47,9 +74,9 @@ export default class App extends Component {
         });
     });
   }
-  getUserInfo(token){
-    let that=this;
-    let url=`https://api.artik.cloud/v1.1/users/self`
+  getUserInfo(token) {
+    let that = this;
+    let url = `https://api.artik.cloud/v1.1/users/self`
     fetch(url, {
       method: "get",
       headers: {
@@ -58,16 +85,16 @@ export default class App extends Component {
       }
     })
       .then(responseJson => {
-        let userId=JSON.parse(responseJson._bodyInit).data.id;
-        that.getDevices(userId,token)
+        let userId = JSON.parse(responseJson._bodyInit).data.id;
+        that.getDevices(userId, token)
       })
       .catch(error => {
         console.error(error);
       });
   }
-  getDevices(userId,token){
-    let that=this;
-    let url=`https://api.artik.cloud/v1.1/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`;
+  getDevices(userId, token) {
+    let that = this;
+    let url = `https://api.artik.cloud/v1.1/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`;
     fetch(url, {
       method: "get",
       headers: {
@@ -76,8 +103,8 @@ export default class App extends Component {
       }
     })
       .then(responseJson => {
-        let devices=JSON.parse(responseJson._bodyInit).data.devices;
-        that.setState({devices:devices});
+        let devices = JSON.parse(responseJson._bodyInit).data.devices;
+        that.setState({ devices: devices,isLogged:true });
       })
       .catch(error => {
         console.error(error);
@@ -86,14 +113,18 @@ export default class App extends Component {
   render() {
     return (
       <View>
-        <Button
-          onPress={
-            this._onPressButton
-          }
-          title="Login"
-        />
-        <FlatList data={this.state.devices} renderItem={({item})=><Text>{item.id}</Text>}>
-       </FlatList>
+        {!this.state.isLogged
+          ? <Button
+            onPress={
+              this._onPressButton
+            }
+            title="Login"
+          />
+          : <FlatList data={this.state.devices} renderItem={({ item }) => <Text>{item.id}</Text>}>
+          </FlatList>
+        }
+
+
       </View>
     );
   }
