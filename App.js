@@ -18,24 +18,32 @@ export default class App extends Component {
     }
   }
   componentDidMount(){
-    console.log("did mount");
+    console.log("component did mount");
     this.getToken();
   }
-  async saveToken(access_token){
+  saveToken(access_token){
     try {
-      await AsyncStorage.setItem('token', access_token);
+      AsyncStorage.setItem('@token:key', access_token).then(()=>{
+        console.log("token is saved!");
+        AsyncStorage.getItem('@token:key').then((v)=>{
+          console.log(v);
+        });
+      });
+      
     } catch (error) {
       console.log("token is not saved!")
     }
   }
-  async getToken(){
+  getToken(){
     try {      
-      let access_token = await AsyncStorage.getItem('token');
-      if (access_token !== null){
-        this.getUserInfo(access_token);
-      }
+      AsyncStorage.getItem('@token:key').then((access_token)=>{
+        console.log(access_token);
+        if (access_token !== null){
+          this.getUserInfo(access_token);
+        }
+      });      
     } catch (error) {
-      console.log(error);
+      console.log("cannot get token");
     }
   }
   _onPressButton = (e) => {
