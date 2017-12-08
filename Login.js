@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Network from './Network';
-import Login from './Login';
 import {
   Button,
   View,
@@ -8,12 +7,10 @@ import {
   Alert,
   Text,
   FlatList,
-  Switch
+  Navigator
 } from 'react-native';
 
-import { StackNavigator } from 'react-navigation'
-
-export default class App extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props)
     this.state = { devices: [] }
@@ -49,7 +46,8 @@ export default class App extends Component {
         Network.token = access_token;
         console.log(`--------net token: ${Network.token}`)
         // that.getUserInfo(access_token);
-        that.getUserInfo();
+        //that.getUserInfo();
+        that.props.navigation.navigate('Devices');
       }).catch(error => {
         console.error(error);
       });
@@ -73,22 +71,36 @@ export default class App extends Component {
     })
   }
 
-  renderScene(route, navigator) {
-    switch (route.name) {
-      case "login":
-        return <Login/>;
-      break;
-    }
-  }
-
   render() {
-    return StackNavigator({
-      Home: { screen: Login },
-    })
+    return (
+      <View>
+        <Button
+          onPress={
+            this._onPressButton
+          }
+          title="Login"
+        />
+        <Button
+          onPress={
+            this._onPressButton
+          }
+          title="Login"
+        />
+        <Button
+          onPress={
+            this._onPressButton
+          }
+          title="Login"
+        />
+        <FlatList data={this.state.devices} renderItem={({ item }) => <Text key={item.id}>{item.id}</Text>}>
+        </FlatList>
+      </View>
+    );
   }
 
-  componentDidMount() {
-    console.log('componentDidMount main')
+  componentDidMount(){
+      console.log('componentDidMount login')
+      console.log(this.props)
   }
 }
 
