@@ -13,7 +13,9 @@ export const HomeStack=StackNavigator({
         navigationOptions: {
             headerTitle: 'Home',
           }
-    },
+    }
+});
+export const DetailStack=StackNavigator({
     Detail:{
         screen: DetailScreen,
         navigationOptions: {
@@ -21,14 +23,18 @@ export const HomeStack=StackNavigator({
           },
     }
 });
-
 //used
-export const RootTabs = TabNavigator({
+export const RootTabs = TabNavigator(
+    {
     Home: {
-      screen: HomeScreen,
+      screen: HomeStack,
     },
     Detail:{
-        screen: DetailScreen,
+        screen: DetailStack,
     }
-  });
+  },
+  {
+    tabBarPosition:'bottom'
+  }
+);
   
