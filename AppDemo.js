@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {
     View,
-    AsyncStorage
+    AsyncStorage,
+    Text
 } from 'react-native';
 import LoginScreen from './app/screens/LoginScreen';
 import HomeScreen from './app/screens/HomeScreen';
+import {HomeStack,RootTabs} from './app/config/routes';
 
 export default class AppDemo extends Component {
     constructor(props) {
@@ -18,7 +20,8 @@ export default class AppDemo extends Component {
         console.log("component did mount");
         this.getToken();
     }
-    RedirectToHomeScreen(access_token){
+    RedirectToHomeScreen=(access_token)=>{
+        console.log(access_token);
         this.setState({isLogged:true,token:access_token});
     }
     getToken() {
@@ -38,9 +41,7 @@ export default class AppDemo extends Component {
 
     render() {
         return (
-            <View>
-                {!this.state.isLogged ?<LoginScreen RedirectToHomeScreenProp={this.RedirectToHomeScreen}/> : <HomeScreen token={this.state.token}/>}
-            </View>
+                !this.state.isLogged ?<LoginScreen RedirectToHomeScreenProp={this.RedirectToHomeScreen}/> : <RootTabs/>
         );
     }
 }
