@@ -4,6 +4,7 @@ import {
     View,
     Text,
     FlatList,
+    AsyncStorage
 } from 'react-native';
 
 export default class DeviceComponent extends Component {
@@ -14,7 +15,18 @@ export default class DeviceComponent extends Component {
         }
     }
     componentDidMount() {
-        this.getUserInfo(this.props.token);
+        try {
+            AsyncStorage.getItem('@token:key').then((access_token) => {
+                
+                if (access_token !== null) {
+                    console.log(access_token);
+                    console.log("token got");
+                    this.getUserInfo(access_token);
+                }
+            });
+        } catch (error) {
+            console.log("cannot get token");
+        }
     }
 
     getUserInfo() {
