@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Network from './app/api/Network';
 import {
     View,
     AsyncStorage,
@@ -18,10 +19,10 @@ export default class AppDemo extends Component {
     }
     componentDidMount() {
         console.log("component did mount");
+        // AsyncStorage.removeItem('@token:key')
         this.getToken();
     }
-    RedirectToHomeScreen=(access_token)=>{
-        console.log(access_token);
+    RedirectToHomeScreen = (access_token) =>{
         this.setState({isLogged:true,token:access_token});
     }
     getToken() {
@@ -31,7 +32,10 @@ export default class AppDemo extends Component {
                 if (access_token !== null) {
                     console.log(access_token);
                     console.log("token got");
+                    Network.token = access_token;
                    this.RedirectToHomeScreen(access_token);
+                } else {
+
                 }
             });
         } catch (error) {

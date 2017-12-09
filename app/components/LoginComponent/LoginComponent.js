@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Network from '../../api/Network'
 import {
     Button,
     View,
@@ -52,6 +53,7 @@ export default class LoginComponent extends Component {
                 .then(responseJson => {
                     let access_token = JSON.parse(responseJson._bodyInit).access_token;
                     that.saveToken(access_token);
+                    Network.token = access_token;
                     that.props.RedirectToHomeScreenProp(access_token);
                 })
                 .catch(error => {
@@ -66,6 +68,7 @@ export default class LoginComponent extends Component {
                 AsyncStorage.getItem('@token:key').then((v) => {
                     console.log(v);
                 });
+                Network.token = access_token;
             });
 
         } catch (error) {

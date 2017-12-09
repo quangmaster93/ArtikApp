@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Network from './Network';
 import {
   Button,
   View,
@@ -18,9 +19,12 @@ export default class App extends Component {
     }
   }
   componentDidMount(){
+    console.log("======= curent state")
+    console.log(this.state)
     console.log("component did mount");
     this.getToken();
   }
+
   saveToken(access_token){
     try {
       AsyncStorage.setItem('@token:key', access_token).then(()=>{
@@ -34,18 +38,20 @@ export default class App extends Component {
       console.log("token is not saved!")
     }
   }
+
   getToken(){
     try {      
       AsyncStorage.getItem('@token:key').then((access_token)=>{
         console.log(access_token);
         if (access_token !== null){
-          this.getUserInfo(access_token);
+          this.getUserInfo();
         }
       });      
     } catch (error) {
       console.log("cannot get token");
     }
   }
+
   _onPressButton = (e) => {
     let that = this;
     let challenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
@@ -82,42 +88,24 @@ export default class App extends Component {
         });
     });
   }
-  getUserInfo(token) {
+
+  getUserInfo() {
+    console.log("===========get uif")
     let that = this;
-    let url = `https://api.artik.cloud/v1.1/users/self`
-    fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
+    Network.get('/users/self', (responseJson) => {
+      let userId = JSON.parse(responseJson._bodyInit).data.id;
+      that.getDevices(userId)
     })
-      .then(responseJson => {
-        let userId = JSON.parse(responseJson._bodyInit).data.id;
-        that.getDevices(userId, token)
-      })
-      .catch(error => {
-        console.error(error);
-      });
   }
-  getDevices(userId, token) {
+
+  getDevices(userId) {
     let that = this;
-    let url = `https://api.artik.cloud/v1.1/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`;
-    fetch(url, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
+    Network.get(`/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`, (responseJson) => {
+      let devices = JSON.parse(responseJson._bodyInit).data.devices;
+      that.setState({ devices: devices, isLogged: true });
     })
-      .then(responseJson => {
-        let devices = JSON.parse(responseJson._bodyInit).data.devices;
-        that.setState({ devices: devices,isLogged:true });
-      })
-      .catch(error => {
-        console.error(error);
-      });
   }
+  
   render() {
     return (
       <View>
@@ -131,8 +119,6 @@ export default class App extends Component {
           : <FlatList data={this.state.devices} renderItem={({ item }) => <Text>{item.id}</Text>}>
           </FlatList>
         }
-
-
       </View>
     );
   }
