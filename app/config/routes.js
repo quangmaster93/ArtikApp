@@ -6,7 +6,7 @@ import DetailScreen from '../screens/DetailScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MenuScreen from '../screens/MenuScreen';
 
-//not yet used
+//Stack
 export const HomeStack=StackNavigator({
     Home:{
         screen: HomeScreen,
@@ -23,7 +23,9 @@ export const DetailStack=StackNavigator({
           },
     }
 });
-//used
+
+
+//Tab
 export const RootTabs = TabNavigator(
     {
     Home: {
