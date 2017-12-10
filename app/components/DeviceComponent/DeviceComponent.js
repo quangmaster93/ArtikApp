@@ -8,7 +8,8 @@ import {
     AsyncStorage,
     View,
     TouchableHighlight,
-    Alert
+    Alert,
+    Button
 } from 'react-native';
 
 export default class DeviceComponent extends Component {
@@ -47,6 +48,7 @@ export default class DeviceComponent extends Component {
         let that = this;
         Network.get(`/users/${userId}/devices?count=100&includeProperties=false&includeShareInfo=false`, (responseJson) => {
             let devices = JSON.parse(responseJson._bodyInit).data.devices;
+            console.log(devices.length)
             that.setState({ devices: devices });
         })
     }
@@ -56,7 +58,7 @@ export default class DeviceComponent extends Component {
             <ScrollView>
                 <FlatList data={this.state.devices}
                     style={{padding: 20}}
-                    renderItem={({ item }) => <DeviceItem data={item} key={item.id}/>}>
+                    renderItem={({ item }) => <DeviceItem nav={this.props.nav} data={item} key={item.id}/>}>
                 </FlatList>
             </ScrollView>
         );
@@ -65,17 +67,39 @@ export default class DeviceComponent extends Component {
 
 class DeviceItem extends Component {
 
+    state = {actions: []}
+
     _handleNameTouch(name) {
         Alert.alert(`You touch on ${name}`);
     }
+
+    getDeviceManifest(){
+        let that = this;
+        Network.get(`/devicetypes/${this.props.data.dtid}/manifests/latest/properties`, (data) => {
+            let actions = JSON.parse(data._bodyInit).data.properties.actions;
+            let actionsArray = [];
+            for(var pr in actions){
+                actionsArray.push({ name: pr, data: actions[pr], ddid: that.props.data.id});
+            }
+            that.setState({actions: actionsArray});
+        })
+    }
+
+    componentDidMount() {
+        this.getDeviceManifest()
+    }
+
     render() {
-        let {data} = this.props
+        let {data} = this.props;
         return <View style={stDeviceItem}>
             <TouchableHighlight onPress={() => this._handleNameTouch(data.name)}>
                 <Text>{data.name}</Text>
             </TouchableHighlight>
+            <FlatList data={this.state.actions}
+                    renderItem={({ item }) => <Button title={item.data.description} onPress={() => this.props.nav.navigate('ActionDetail', item)}/>}>
+            </FlatList>
             <Text>Connected: {data.connected + ""}</Text>
-            <Text>{moment().fromNow(data.createdOn)}</Text>
+            {/* <Text>{moment().fromNow(data.createdOn)}</Text> */}
         </View>
     }
 }
