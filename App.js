@@ -19,8 +19,6 @@ export default class App extends Component {
     }
   }
   componentDidMount(){
-    console.log("======= curent state")
-    console.log(this.state)
     console.log("component did mount");
     this.getToken();
   }

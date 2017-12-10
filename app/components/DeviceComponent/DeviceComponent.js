@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import Network from '../../api/Network'
+import moment from 'moment';
 import {
-    View,
+    ScrollView,
     Text,
     FlatList,
-    AsyncStorage
+    AsyncStorage,
+    View,
+    TouchableHighlight,
+    Alert
 } from 'react-native';
 
 export default class DeviceComponent extends Component {
@@ -17,7 +21,7 @@ export default class DeviceComponent extends Component {
     componentDidMount() {
         try {
             AsyncStorage.getItem('@token:key').then((access_token) => {
-                
+
                 if (access_token !== null) {
                     console.log(access_token);
                     console.log("token got");
@@ -49,10 +53,37 @@ export default class DeviceComponent extends Component {
 
     render() {
         return (
-            <View>
-                <FlatList data={this.state.devices} renderItem={({ item }) => <Text>{item.id}</Text>}></FlatList>
-            </View>
+            <ScrollView>
+                <FlatList data={this.state.devices}
+                    style={{padding: 20}}
+                    renderItem={({ item }) => <DeviceItem data={item} key={item.id}/>}>
+                </FlatList>
+            </ScrollView>
         );
     }
+}
+
+class DeviceItem extends Component {
+
+    _handleNameTouch(name) {
+        Alert.alert(`You touch on ${name}`);
+    }
+    render() {
+        let {data} = this.props
+        return <View style={stDeviceItem}>
+            <TouchableHighlight onPress={() => this._handleNameTouch(data.name)}>
+                <Text>{data.name}</Text>
+            </TouchableHighlight>
+            <Text>Connected: {data.connected + ""}</Text>
+            <Text>{moment().fromNow(data.createdOn)}</Text>
+        </View>
+    }
+}
+
+var stDeviceItem = {
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: '#d6d7da',
+    padding: 20,
 }
 
