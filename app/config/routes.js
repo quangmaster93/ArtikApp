@@ -1,34 +1,46 @@
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
-import { TabNavigator } from 'react-navigation';
+import { StackNavigator, DrawerNavigator,TabNavigator  } from 'react-navigation';
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MenuScreen from '../screens/MenuScreen';
+import SlideMenuScreen from '../screens/SlideMenuScreen';
 
-//not yet used
+//Stack
 export const HomeStack=StackNavigator({
     Home:{
         screen: HomeScreen,
-        navigationOptions: {
-            headerTitle: 'Home',
-          }
-    },
+    }
+});
+export const DetailStack=StackNavigator({
     Detail:{
         screen: DetailScreen,
-        navigationOptions: {
-            headerTitle: 'Detail',
-          },
     }
 });
 
-//used
-export const RootTabs = TabNavigator({
+
+//Tab
+export const RootTabs = TabNavigator(
+    {
     Home: {
-      screen: HomeScreen,
+      screen: HomeStack,
     },
     Detail:{
-        screen: DetailScreen,
+        screen: DetailStack,
     }
-  });
+  },
+  {
+    tabBarPosition:'bottom'
+  }
+);
+
+//Slide Menu
+export const SlideMenu = DrawerNavigator({   
+    Home:{
+        screen:RootTabs
+    }
+},
+{
+    contentComponent:props=><SlideMenuScreen {...props}></SlideMenuScreen>
+});
   
