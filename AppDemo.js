@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import LoginScreen from './app/screens/LoginScreen';
 import HomeScreen from './app/screens/HomeScreen';
-import {HomeStack,RootTabs} from './app/config/routes';
+import {HomeStack,RootTabs,SlideMenu} from './app/config/routes';
 
 export default class AppDemo extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ export default class AppDemo extends Component {
 
     render() {
         return (
-                !this.state.isLogged ?<LoginScreen RedirectToHomeScreenProp={this.RedirectToHomeScreen}/> : <RootTabs/>
+                !this.state.isLogged ?<LoginScreen RedirectToHomeScreenProp={this.RedirectToHomeScreen}/> : <SlideMenu/>
         );
     }
 }
