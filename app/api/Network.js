@@ -3,7 +3,7 @@ export default class Network {
     static get(path, callBack) {
         console.log("Network.dkm()" + Network.token);
         console.log(Network.dkm());
-        fetch(Network.dkm().endpoint + path, {
+        return fetch(Network.dkm().endpoint + path, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export default class Network {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${Network.token}`
             },
-            body: JSON.stringify(data)
+            body: data
         }).then(responseJson => {
             callBack(responseJson)
         }).catch(error => {

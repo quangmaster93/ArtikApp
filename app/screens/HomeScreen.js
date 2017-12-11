@@ -11,7 +11,7 @@ export default class HomeScreen extends Component {
       })
     render() {
         return (
-            <DeviceComponent></DeviceComponent>
+            <DeviceComponent nav={this.props.navigation}></DeviceComponent>
         );
     }
 }
