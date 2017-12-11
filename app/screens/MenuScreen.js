@@ -6,6 +6,7 @@ import {
 
 export default class MenuScreen extends Component {
     render() {
+        
         return (
             <View>
                 <Text>Menu</Text>

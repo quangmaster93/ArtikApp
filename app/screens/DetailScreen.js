@@ -8,10 +8,12 @@ import {
 export default class DetailScreen extends Component {
     static navigationOptions = ({navigation})=>({
         title: 'Detail',
-        headerLeft :<Button title="Menu" onPress={()=>{navigation.navigate('DrawerToggle')}}>
+        headerRight :<Button title="Menu" onPress={()=>{navigation.navigate('DrawerToggle')}}>
         </Button>
       })
     render() {
+        console.log("Detail");
+        console.log(this.props.navigation);
         return (
             <View>
                 <Text>Detail</Text>

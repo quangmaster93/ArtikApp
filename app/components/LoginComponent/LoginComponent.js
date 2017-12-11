@@ -16,9 +16,6 @@ export default class LoginComponent extends Component {
         try {
             AsyncStorage.setItem('@token:key', access_token).then(() => {
                 console.log("token is saved!");
-                AsyncStorage.getItem('@token:key').then((v) => {
-                    console.log(v);
-                });
             });
 
         } catch (error) {
@@ -65,9 +62,6 @@ export default class LoginComponent extends Component {
         try {
             AsyncStorage.setItem('@token:key', access_token).then(() => {
                 console.log("token is saved!");
-                AsyncStorage.getItem('@token:key').then((v) => {
-                    console.log(v);
-                });
                 Network.token = access_token;
             });
 

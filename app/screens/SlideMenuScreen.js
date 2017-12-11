@@ -8,17 +8,19 @@ import {
 } from 'react-native';
 
 export default class SlideMenuScreen extends Component {
-    removeToken() {
+    logOut=()=> {
         console.log('remove token');
         AsyncStorage.removeItem('@token:key');
+        this.props.navigation.navigate("LoginScreen");
     }
     render() {
-        {console.log(123)}
+        console.log("Menu");
+        console.log(this.props.navigation);
         return (
             <View style={styles.container}>
                 <Text>SlideMenuScreen</Text>
-                <Button title="Close Menu" onPress={() => { this.props.navigation.navigate('DrawerToggle') }}></Button>
-                <Button title="Remove Token" onPress={ this.removeToken }></Button>
+                <Button title="Close Menu" onPress={() => { this.props.navigation.navigate('DrawerClose') }}></Button>
+                <Button title="Log out" onPress={ ()=>{this.logOut() }}></Button>
             </View>
         );
     }
@@ -26,7 +28,7 @@ export default class SlideMenuScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#00BCD4"
+        backgroundColor: "#00BCD4",
     }
 })
 

@@ -27,9 +27,6 @@ export default class App extends Component {
     try {
       AsyncStorage.setItem('@token:key', access_token).then(()=>{
         console.log("token is saved!");
-        AsyncStorage.getItem('@token:key').then((v)=>{
-          console.log(v);
-        });
       });
       
     } catch (error) {
@@ -88,7 +85,6 @@ export default class App extends Component {
   }
 
   getUserInfo() {
-    console.log("===========get uif")
     let that = this;
     Network.get('/users/self', (responseJson) => {
       let userId = JSON.parse(responseJson._bodyInit).data.id;

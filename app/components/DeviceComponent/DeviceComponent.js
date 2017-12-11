@@ -96,7 +96,7 @@ class DeviceItem extends Component {
                 <Text>{data.name}</Text>
             </TouchableHighlight>
             <FlatList data={this.state.actions}
-                    renderItem={({ item }) => <Button title={item.data.description} onPress={() => this.props.nav.navigate('ActionDetail', item)}/>}>
+                    renderItem={({ item }) => <Button title={item.data.description} onPress={() => this.props.nav.navigate('ActionDetailScreen', item)}/>}>
             </FlatList>
             <Text>Connected: {data.connected + ""}</Text>
             {/* <Text>{moment().fromNow(data.createdOn)}</Text> */}

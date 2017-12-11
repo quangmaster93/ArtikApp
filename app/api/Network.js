@@ -1,8 +1,8 @@
 
 export default class Network {
     static get(path, callBack) {
-        console.log("Network.dkm()" + Network.token);
-        console.log(Network.dkm());
+        // console.log("Network.dkm()" + Network.token);
+        // console.log(Network.dkm());
         return fetch(Network.dkm().endpoint + path, {
             method: "get",
             headers: {

@@ -3,15 +3,14 @@ import {
     View,
     Text,
     Button,
-    TextInput
+    TextInput,
+    CheckBox
 } from 'react-native';
 import Network from '../api/Network';
 
 export default class ActionDetailScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
-        title: 'Detail',
-        headerLeft: <Button title="Menu" onPress={() => { navigation.navigate('DrawerToggle') }}>
-        </Button>
+        title: 'Action Detail',
     });
 
     params = {};
@@ -23,21 +22,25 @@ export default class ActionDetailScreen extends Component {
             let param = params[p];
             switch (param.type) {
                 case 'String':
-                    inputItems.push(<View key={p}>
+                    inputItems.push(<View>
                         <Text>{param.description}</Text>
-                        <TextInput keyboardType="default" value={this.params[p] != null ? this.params[p] : ""} onChangeText={(value) => {this.params[p] = value, this.forceUpdate()}}></TextInput>
+                        <TextInput keyboardType="default" value={this.params[p] != null ? this.params[p] : ""} onChangeText={(value) => { this.params[p] = value, this.forceUpdate() }}></TextInput>
                     </View>)
                     break;
                 case 'Boolean':
                     inputItems.push(<View>
                         <Text>{param.description}</Text>
-                        <CheckBox />
-                    </View>)
+                        <CheckBox value={this.params[p] != null ? this.params[p] : false} onValueChange={(value) => { this.params[p] = value, this.forceUpdate() }}/>
+                    </View >)
                     break;
                 case 'Double':
                 case 'Float':
                 case 'Integer':
                 case 'Long':
+                    inputItems.push(<View>
+                        <Text>{param.description}</Text>
+                        <TextInput keyboardType="numeric" value={this.params[p] != null ? this.params[p] : ""} onChangeText={(value) => { this.params[p] = value, this.forceUpdate() }}></TextInput>
+                    </View>)
                     break;
             }
         }
@@ -46,7 +49,7 @@ export default class ActionDetailScreen extends Component {
     }
 
     sendAction = () => {
-        
+
         let data = {
             actions: [{
                 name: this.props.navigation.state.params.name,
@@ -59,19 +62,19 @@ export default class ActionDetailScreen extends Component {
             ddid: this.props.navigation.state.params.ddid,
             type: 'action'
         }
-        // console.log(JSON.stringify(data));
+        console.log(postData);
 
-        Network.post('/actions', postData, (res) =>{
+        Network.post('/actions', JSON.stringify(postData), (res) => {
             console.log(res);
         })
     }
 
-
     render() {
         let parameters
+        console.log("Action");
+        console.log(this.props.navigation);
         return (
             <View>
-                <Text>dkm</Text>
                 <Text>{JSON.stringify(this.props.navigation.state)}</Text>
                 {this.renderParameterInput()}
                 <Button title="Send" onPress={this.sendAction}></Button>

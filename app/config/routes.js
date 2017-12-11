@@ -7,17 +7,18 @@ import MenuScreen from '../screens/MenuScreen';
 import SlideMenuScreen from '../screens/SlideMenuScreen';
 import ActionDetailScreen from '../screens/ActionDetailScreen';
 
+
 //Stack
 export const HomeStack = StackNavigator({
-    Home: {
+    HomeScreen: {
         screen: HomeScreen,
     },
-    ActionDetail: {
+    ActionDetailScreen: {
         screen: ActionDetailScreen
     }
 });
 export const DetailStack = StackNavigator({
-    Detail: {
+    DetailScreen: {
         screen: DetailScreen,
     }
 });
@@ -26,23 +27,29 @@ export const DetailStack = StackNavigator({
 //Tab
 export const RootTabs = TabNavigator(
     {
-        Home: {
+        HomeStack: {
             screen: HomeStack,
+            title :"Home"
         },
-        Detail: {
+        DetailStack: {
             screen: DetailStack,
+            title :"Detail"
         }
     },
     {
-        tabBarPosition: 'bottom'
+        tabBarPosition: 'bottom',
+        scrollEnabled :true
     }
 );
 
 //Slide Menu
 export const SlideMenu = DrawerNavigator(
     {
-        Home: {
+        RootTabs: {
             screen: RootTabs
+        },
+        LoginScreen:{
+            screen: LoginScreen
         }
     }, {
         contentComponent: props => <SlideMenuScreen {...props}></SlideMenuScreen>
