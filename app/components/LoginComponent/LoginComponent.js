@@ -10,7 +10,8 @@ import {
 
 export default class LoginComponent extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this._onPressButton=this._onPressButton.bind(this);
     }
     saveToken(access_token) {
         try {
@@ -72,7 +73,7 @@ export default class LoginComponent extends Component {
     render() {
         return (
             <View>
-                <Button onPress={this._onPressButton}title="Login"/>
+                <Button onPress={this._onPressButton} title="Login"/>
             </View>
         );
     }

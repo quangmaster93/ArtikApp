@@ -10,8 +10,11 @@ import {
 export default class SlideMenuScreen extends Component {
     logOut=()=> {
         console.log('remove token');
-        AsyncStorage.removeItem('@token:key');
-        this.props.navigation.navigate("LoginScreen");
+        AsyncStorage.removeItem('@token:key')
+        .then(() => {
+            // this.props.navigation.navigate("LoginScreen");
+        });;
+        
     }
     render() {
         console.log("Menu");
